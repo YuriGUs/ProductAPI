@@ -13,14 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.springboot.dtos.ProductRecordDTO;
 import com.example.springboot.models.ProductModel;
 import com.example.springboot.repositories.ProductRepository;
+import com.example.springboot.services.ProductService;
 
-import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 
 
@@ -29,6 +32,12 @@ public class ProductController {
   
   @Autowired
   ProductRepository productRepository;
+
+  private ProductService productService;
+
+  public ProductController(ProductService productService) {
+    this.productService = productService;
+  }
 
   @PostMapping("/products") // rota
   public ResponseEntity<ProductModel> saveProduct(@RequestBody @Valid ProductRecordDTO productRecordDTO) {
@@ -50,7 +59,25 @@ public class ProductController {
     }
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado");
   }
-  
+
+  @DeleteMapping("/products/{id}")
+  public ResponseEntity<String> deleteProductById(@PathVariable("id") UUID id) {
+    if (productRepository.existsById(id)) {
+      productRepository.deleteById(id);
+      return ResponseEntity.ok("Produto excluido com sucesso!");
+    }
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado");
+  }
+
+  @PutMapping("/products/{id}")
+  public ResponseEntity<Object> updateProduct(@PathVariable UUID id, @RequestBody @Valid ProductRecordDTO updatedProduct) {
+    Optional<ProductModel> updated = productService.updateProduct(id, updatedProduct);
+
+    if (updated.isPresent()) {
+      return ResponseEntity.ok("Produto atualizado com sucesso!");
+    }
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado");
+  }
 }
 
 /*
