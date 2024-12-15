@@ -1,12 +1,15 @@
 package com.example.springboot.services;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.springboot.dtos.ProductRecordDTO;
+import com.example.springboot.exceptions.ResourceNotFoundException;
 import com.example.springboot.models.ProductModel;
 import com.example.springboot.repositories.ProductRepository;
 
@@ -16,6 +19,30 @@ public class ProductService {
   @Autowired
   private ProductRepository productRepository;
 
+  public ProductModel saveProduct(ProductRecordDTO productRecordDTO) {
+    var productModel = new ProductModel();
+    BeanUtils.copyProperties(productRecordDTO, productModel);
+    return productRepository.save(productModel);
+  }
+
+  public List<ProductModel> getAllProducts() {
+    return productRepository.findAll();
+  }
+
+  public ProductModel getOneProduct(UUID id) {
+    return productRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + id));
+  }
+
+
+  public void deleteProductById(UUID id) {
+    if (!productRepository.existsById(id)) {
+      throw new ResourceNotFoundException("Item não encontrado");
+    }
+    productRepository.deleteById(id);
+  }
+  
+  
   public Optional<ProductModel> updateProduct(UUID id, ProductRecordDTO updatedProduct) {
     Optional<ProductModel> existingProduct = productRepository.findById(id);
 
