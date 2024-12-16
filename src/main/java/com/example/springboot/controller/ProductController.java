@@ -2,7 +2,6 @@ package com.example.springboot.controller;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +19,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
-
-
 
 
 @RestController
@@ -46,19 +43,19 @@ public class ProductController {
   }
   
   @GetMapping("/products/{id}")
-  public ResponseEntity<ProductModel> getOneProduct(@PathVariable("id") UUID id) {
+  public ResponseEntity<ProductModel> getOneProduct(@PathVariable Long id) {
     ProductModel product = productService.getOneProduct(id);
     return ResponseEntity.ok(product);
   }
 
   @DeleteMapping("/products/{id}")
-  public ResponseEntity<Void> deleteProductById(@PathVariable UUID id) {
+  public ResponseEntity<Void> deleteProductById(@PathVariable Long id) {
     productService.deleteProductById(id);
     return ResponseEntity.noContent().build();
   }
 
   @PutMapping("/products/{id}")
-  public ResponseEntity<Object> updateProduct(@PathVariable UUID id, @RequestBody @Valid ProductRecordDTO updatedProduct) {
+  public ResponseEntity<Object> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductRecordDTO updatedProduct) {
     Optional<ProductModel> updated = productService.updateProduct(id, updatedProduct);
 
     if (updated.isPresent()) {
