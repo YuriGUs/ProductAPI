@@ -1,11 +1,15 @@
 package com.example.springboot.models;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import com.example.springboot.enums.OrderStatus;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,22 +23,26 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "TB_PRODUTOS")
-public class ProductModel implements Serializable {
+@Table( name = "TB_ORDER" )
+public class OrderModel {
   
-  private static final long serialVersionUID = 1L;
-
   @Id
   @GeneratedValue( strategy = GenerationType.IDENTITY )
-  private Long idProduct;
+  private Long idOrder;
 
-  private String name;
-  private BigDecimal value;
+  @Enumerated(EnumType.STRING)
+  private OrderStatus status;
 
-  @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+  private BigDecimal total_price;
+
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<OrderItemModel> orderItems;
 
   @ManyToOne
-  @JoinColumn(name = "categoria_id")
-  CategoryModel categoria;
+  @JoinColumn(name = "user_id", nullable = false)
+  private UserModel userModel;
+
+  // Relação com order item
+
+  private LocalDateTime createdAt;
 }

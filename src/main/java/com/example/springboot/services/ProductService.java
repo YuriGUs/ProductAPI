@@ -2,7 +2,6 @@ package com.example.springboot.services;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +28,13 @@ public class ProductService {
     return productRepository.findAll();
   }
 
-  public ProductModel getOneProduct(UUID id) {
+  public ProductModel getOneProduct(Long id) {
     return productRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Produto não encontrado com ID: " + id));
   }
 
 
-  public void deleteProductById(UUID id) {
+  public void deleteProductById(Long id) {
     if (!productRepository.existsById(id)) {
       throw new ResourceNotFoundException("Item não encontrado");
     }
@@ -43,7 +42,7 @@ public class ProductService {
   }
   
   
-  public Optional<ProductModel> updateProduct(UUID id, ProductRecordDTO updatedProduct) {
+  public Optional<ProductModel> updateProduct(Long id, ProductRecordDTO updatedProduct) {
     Optional<ProductModel> existingProduct = productRepository.findById(id);
 
     if (existingProduct.isPresent()) {
