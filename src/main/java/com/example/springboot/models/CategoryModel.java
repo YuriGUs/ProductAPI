@@ -3,15 +3,11 @@ package com.example.springboot.models;
 
 import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Getter
@@ -26,6 +22,16 @@ public class CategoryModel {
   @Column( unique = true )
   private String name;
 
-  @OneToMany(mappedBy = "categoria")
+  @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
   private List<ProductModel> produtos;
 }
+
+/*
+  Tive um problema com ciclos durante a serialização quando fiz uma requisição para o endPoint de
+  associação de produtos a uma categoria.
+
+  Solução: @JsonIgnore anotação usada em um dos lados da referencia bidirecionais para evitar o loop.
+  Existem outas soluções também.
+ */
+
