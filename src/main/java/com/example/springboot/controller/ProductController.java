@@ -3,6 +3,9 @@ package com.example.springboot.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.springboot.services.CategoryService;
+import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,8 +27,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class ProductController {
 
   private final ProductService productService;
-  
-  public ProductController(ProductService productService) {
+
+  public ProductController(ProductService productService, CategoryService categoryService) {
     this.productService = productService;
   }
 
@@ -61,6 +64,12 @@ public class ProductController {
       return ResponseEntity.ok("Produto atualizado com sucesso!");
     }
     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Produto não encontrado");
+  }
+
+  @PutMapping("/products/{productId}/category/{categoryId}")
+  public ResponseEntity<ProductModel> associateCategory(@PathVariable Long productId, @PathVariable Long categoryId) {
+    ProductModel updatedProduct = productService.associateCategory(productId, categoryId);
+    return ResponseEntity.ok(updatedProduct);
   }
 }
 

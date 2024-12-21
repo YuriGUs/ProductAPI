@@ -15,9 +15,13 @@ import com.example.springboot.repositories.CategoryRepository;
 
 @Service
 public class CategoryService {
-  
+
+  private final CategoryRepository categoryRepository;
+
   @Autowired
-  private CategoryRepository categoryRepository;
+  public CategoryService(CategoryRepository categoryRepository) {
+    this.categoryRepository = categoryRepository;
+  }
 
   public CategoryModel saveCategory(CategoryRecordDTO categoryRecordDTO) {
     CategoryModel categoryModel = new CategoryModel();
